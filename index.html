@@ -42,48 +42,6 @@ input[type=number]{min-width:0!important}
 #app td:last-child button{padding:7px 8px}
 @media(max-width:1100px){#app .grid{grid-template-columns:1fr}}
 
-
-/* BUILD: HEADER-ALIGNMENT-9 */
-/* Titel exakt mittig ueber der gesamten Tabellenbreite; Schriftgroessen bleiben unveraendert. */
-#app .topbar{
-  display:block !important;
-  position:relative;
-}
-#app .topbar .hero{
-  width:100%;
-  text-align:center !important;
-}
-#app .hero h1,
-#app .hero p{
-  text-align:center !important;
-}
-/* Benutzer-/Backup-Leiste exakt auf derselben Zeile wie +Ware bis +Passiv-Fisch
-   und rechts an der Tabellenkante ausgerichtet. */
-#app .topbar > div:last-child{
-  position:absolute;
-  right:0;
-  bottom:-42px;
-  top:auto;
-  text-align:right;
-  z-index:2;
-  white-space:nowrap;
-}
-#app .actions{
-  justify-content:flex-start !important;
-  text-align:left !important;
-  min-height:38px;
-  align-items:center;
-}
-@media(max-width:1100px){
-  #app .topbar > div:last-child{
-    position:static;
-    width:100%;
-    margin-top:8px;
-    text-align:right;
-    white-space:normal;
-  }
-}
-
 </style></head>
 <body><div id="login" class="login"><div class="loginbox">
 <div id="loginPanel"><h2>Anmeldung</h2><input id="lu" placeholder="Benutzername" autocomplete="username"><input id="lp" type="password" placeholder="Passwort" autocomplete="current-password"><button onclick="login()">Anmelden</button><p id="loginmsg" class="hint">Pruefe Benutzerverwaltung...</p></div>
