@@ -47,7 +47,7 @@ input[type=number]{min-width:0!important}
 <div id="loginPanel"><h2>Anmeldung</h2><input id="lu" placeholder="Benutzername" autocomplete="username"><input id="lp" type="password" placeholder="Passwort" autocomplete="current-password"><button onclick="login()">Anmelden</button><p id="loginmsg" class="hint">Pruefe Benutzerverwaltung...</p></div>
 <div id="setupPanel" hidden><h2>Ersteinrichtung</h2><p class="hint">Es ist noch kein Benutzer vorhanden. Lege jetzt den ersten Administrator an.</p><input id="su" placeholder="Administrator-Benutzername" autocomplete="username"><input id="sp" type="password" placeholder="Administrator-Passwort" autocomplete="new-password"><input id="sp2" type="password" placeholder="Passwort wiederholen" autocomplete="new-password"><button onclick="bootstrap()">Administrator anlegen</button><p id="setupmsg" class="hint"></p></div>
 </div></div>
-<main id="app" class="wrap" hidden><div class="topbar"><header class="hero"><h1>Legale Waren <span>Preisliste</span></h1><p>ARBEIT - HANDEL - FORTSCHRITT</p></header><div><span id="who"></span> <button id="adminBtn" onclick="openAdmin()" hidden>Benutzerverwaltung</button> <button onclick="downloadBackup()">Backup speichern</button> <button onclick="backupFile.click()">Backup einlesen</button><input id="backupFile" type="file" accept=".json,application/json" hidden onchange="importBackup(this)"> <button onclick="logout()">Abmelden</button><div id="status" class="status"></div></div></div>
+<main id="app" class="wrap" hidden><div class="topbar"><header class="hero"><h1>Legale Waren <span>Preisliste</span></h1><p>ARBEIT - HANDEL - FORTSCHRITT</p></header><div><span id="who"></span> <button id="adminBtn" onclick="openAdmin()" hidden>Benutzerverwaltung</button> <button onclick="downloadBackup()">Backup speichern</button> <button onclick="refreshRemote()">Jetzt synchronisieren</button> <button onclick="backupFile.click()">Backup einlesen</button><input id="backupFile" type="file" accept=".json,application/json" hidden onchange="importBackup(this)"> <button onclick="logout()">Abmelden</button><div id="status" class="status"></div></div></div>
 <div class="actions"><button onclick="addRow('farm')">+ Ware</button><button onclick="addRow('mine')">+ Bergbau</button><button onclick="addRow('active')">+ Aktiv-Fisch</button><button onclick="addRow('passive')">+ Passiv-Fisch</button></div><section class="grid">
 <div class="card"><h2>Farming & Sammelwaren</h2><div class="scroll"><table><thead><tr><th>Rohware</th><th>Menge</th><th>Ergibt</th><th>Endprodukt</th><th>Preis $</th><th>Wert/Rohware</th><th></th></tr></thead><tbody id="farm"></tbody></table></div></div>
 <div class="card"><h2>Bergbau</h2><div class="scroll"><table><thead><tr><th>Rohware</th><th>Menge</th><th>Ergibt</th><th>Endprodukt</th><th>Preis $</th><th>Wert/Rohware</th><th></th></tr></thead><tbody id="mine"></tbody></table></div></div>
@@ -57,7 +57,7 @@ input[type=number]{min-width:0!important}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
 const SUPABASE_URL='https://vdcpqsgpinpbxgjqxrtf.supabase.co', SUPABASE_KEY='sb_publishable_G2ox0HhC9KGXQfOnw7p7Ig_7lxJuEF5', API=SUPABASE_URL+'/functions/v1/narco-api';
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-let token=localStorage.narcoToken||'',me=null,isAdmin=false,data=null,version=0,saveTimer=null,pendingRemote=false;
+let token=localStorage.narcoToken||'',me=null,isAdmin=false,data=null,version=0,saveTimer=null,pendingRemote=false;let localEditAt={};let syncBusy=false;let syncTimer=null;
 const defaults={farm:[['Tabakblatt',20,1,'Verarbeiteter Tabak',1050],['Orange',10,1,'Orangensaft',614]],mine:[['Iron',5,1,'Eisen',431]],active:[['Fisch 1','','','','']],passive:[['Fisch 1','','','','']]};
 async function api(action,extra={}){let r=await fetch(API,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({action,token,...extra})});let j=await r.json();if(!r.ok)throw Error(j.error||'Fehler');return j}
 async function checkSetup(){
@@ -152,8 +152,7 @@ function editing(){let e=document.activeElement;return e&&e.tagName==='INPUT'&&a
 document.addEventListener('focusout',()=>{setTimeout(refreshRemote,150)});
 function subscribe(){
  refreshRemote();
- setInterval(refreshRemote,700);
- document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshRemote()});
+ if(!syncTimer)syncTimer=setInterval(refreshRemote,700);
 }
 function downloadBackup(){let b=new Blob([JSON.stringify({savedAt:new Date().toISOString(),data},null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='narco-preisliste-backup-'+new Date().toISOString().slice(0,10)+'.json';a.click();URL.revokeObjectURL(a.href)}
 async function importBackup(input){
