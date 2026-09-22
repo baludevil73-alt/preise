@@ -93,7 +93,27 @@ function money(v){return Number.isFinite(v)?v.toLocaleString('de-DE',{minimumFra
 function esc(v){return String(v??'').replaceAll('&','&amp;').replaceAll('"','&quot;').replaceAll('<','&lt;')}
 function cell(t,i,j,v,n=false){return `<input data-key="${t}:${i}:${j}" ${n?'type="number" step="any" min="0"':''} value="${esc(v)}" oninput="edit('${t}',${i},${j},this.value)">`}
 function render(t){document.getElementById(t).innerHTML=data[t].map((r,i)=>`<tr><td>${cell(t,i,0,r[0])}</td><td>${cell(t,i,1,r[1],1)}</td><td>${cell(t,i,2,r[2],1)}</td><td>${cell(t,i,3,r[3])}</td><td>${cell(t,i,4,r[4],1)}</td><td class="calc">${money(value(r))}</td><td><button class="danger" onclick="delRow('${t}',${i})">X</button></td></tr>`).join('')}
-function edit(t,i,j,v){data[t][i][j]=[1,2,4].includes(j)?(v===''?'':+v):v;localEditAt[t+':'+i+':'+j]=Date.now();renderRanking();queueSave()}function addRow(t){data[t].push(['','','','','']);render(t);queueSave()}function delRow(t,i){data[t].splice(i,1);render(t);queueSave()}
+function edit(t,i,j,v){
+ const val=[1,2,4].includes(j)?(v===''?'':+v):v;
+ data[t][i][j]=val;
+ localEditAt[t+':'+i+':'+j]=Date.now();
+ renderRanking();
+ queuePatch(t,i,j,val);
+}let patchTimers={};
+function queuePatch(t,i,j,val){
+ const key=t+':'+i+':'+j;
+ status.textContent='Speichern...';
+ clearTimeout(patchTimers[key]);
+ patchTimers[key]=setTimeout(async()=>{
+  try{
+   const r=await api('patch',{section:t,row:i,col:j,value:val});
+   version=Math.max(version,r.version||0);
+   status.textContent='Gespeichert';
+   setTimeout(refreshRemote,80);
+  }catch(e){status.textContent='Speicherfehler: '+e.message}
+ },250);
+}
+function addRow(t){data[t].push(['','','','','']);render(t);queueSave()}function delRow(t,i){data[t].splice(i,1);render(t);queueSave()}
 function queueSave(){status.textContent='Speichern...';clearTimeout(saveTimer);saveTimer=setTimeout(saveNow,450)}async function saveNow(){try{let j=await api('save',{data});version=j.version;status.textContent='Gespeichert'}catch(e){status.textContent='Speicherfehler: '+e.message}}
 function renderRanking(){let a=[];Object.values(data).forEach(rows=>rows.forEach(r=>{let v=value(r);if(Number.isFinite(v))a.push({n:(r[3]||r[0])+' ('+r[0]+')',v})}));a.sort((x,y)=>y.v-x.v);ranking.innerHTML=a.map((x,i)=>`<div class="rank">${i+1}. <b>${esc(x.n)}</b> <span class="calc">${money(x.v)}</span></div>`).join('')}
 function renderAll(){['farm','mine','active','passive'].forEach(render);renderRanking()}
@@ -101,7 +121,7 @@ function editing(){let e=document.activeElement;return e&&e.tagName==='INPUT'&&a
  if(syncBusy)return;
  syncBusy=true;
  try{
-  let j=await api('load');
+  const j=await api('load');
   if(j.version>version){
    const remote=j.data||{};
    const active=document.activeElement;
@@ -109,35 +129,30 @@ function editing(){let e=document.activeElement;return e&&e.tagName==='INPUT'&&a
    ['farm','mine','active','passive'].forEach(t=>{
     const rr=remote[t]||[];
     if(!Array.isArray(data[t]))data[t]=[];
-    // Structural changes: only adopt when not actively editing this section.
-    const sectionEditing=activeKey&&activeKey.startsWith(t+':');
-    if(!sectionEditing && rr.length!==data[t].length){data[t]=structuredClone(rr);return}
-    rr.forEach((row,i)=>{
-      if(!data[t][i])data[t][i]=structuredClone(row);
-      row.forEach((val,c)=>{
-        const key=t+':'+i+':'+c;
-        if(key===activeKey)return;
-        if(Date.now()-(localEditAt[key]||0)<2500)return;
-        data[t][i][c]=val;
-      });
-    });
+    if(rr.length!==data[t].length){
+      if(!(activeKey&&activeKey.startsWith(t+':'))) data[t]=structuredClone(rr);
+      return;
+    }
+    rr.forEach((row,i)=>row.forEach((val,c)=>{
+      const key=t+':'+i+':'+c;
+      if(key===activeKey)return;
+      if(Date.now()-(localEditAt[key]||0)<1200)return;
+      if(data[t][i])data[t][i][c]=val;
+      const el=document.querySelector('input[data-key="'+key+'"]');
+      if(el && el!==active) el.value=val??'';
+    }));
    });
    version=j.version||version;
-   renderAllExceptFocused(activeKey);
-   status.textContent='Automatisch aktualisiert'+(j.updated_by?' von '+j.updated_by:'');
+   renderRanking();
+   status.textContent='Live aktualisiert'+(j.updated_by?' von '+j.updated_by:'');
   }
  }catch(e){console.warn('Sync:',e)}
  finally{syncBusy=false}
 }
-function renderAllExceptFocused(key){
- if(!key){renderAll();return}
- const p=key.split(':');const t=p[0],i=+p[1],c=+p[2];
- ['farm','mine','active','passive'].forEach(x=>{if(x!==t)render(x)});
- renderRanking();
-}
 document.addEventListener('focusout',()=>{setTimeout(refreshRemote,150)});
 function subscribe(){
- setInterval(()=>{if(!document.hidden)refreshRemote()},1200);
+ refreshRemote();
+ setInterval(refreshRemote,700);
  document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshRemote()});
 }
 function downloadBackup(){let b=new Blob([JSON.stringify({savedAt:new Date().toISOString(),data},null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='narco-preisliste-backup-'+new Date().toISOString().slice(0,10)+'.json';a.click();URL.revokeObjectURL(a.href)}
