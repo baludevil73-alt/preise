@@ -33,7 +33,8 @@ input[type=number]{min-width:0!important}
 <div id="admin" class="modal"><div class="modalbox"><div class="topbar"><h2>Benutzerverwaltung</h2><button onclick="closeAdmin()">Schlie&#223;en</button></div><h3>Benutzer anlegen</h3><input id="nu" placeholder="Benutzername"><input id="np" type="password" placeholder="Passwort"><label><input id="na" type="checkbox" style="width:auto;min-width:0"> Administrator</label> <button onclick="createUser()">Anlegen</button><div id="users"></div></div></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
 const SUPABASE_URL='https://vdcpqsgpinpbxgjqxrtf.supabase.co', SUPABASE_KEY='sb_publishable_G2ox0HhC9KGXQfOnw7p7Ig_7lxJuEF5', API=SUPABASE_URL+'/functions/v1/narco-api';
-const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);let token=localStorage.narcoToken||'',me=null,isAdmin=false,data=null,version=0,saveTimer=null,pendingRemote=false;
+const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);let realtimeChannel=null;
+let token=localStorage.narcoToken||'',me=null,isAdmin=false,data=null,version=0,saveTimer=null,pendingRemote=false;
 const defaults={farm:[['Tabakblatt',20,1,'Verarbeiteter Tabak',1050],['Orange',10,1,'Orangensaft',614]],mine:[['Iron',5,1,'Eisen',431]],active:[['Fisch 1','','','','']],passive:[['Fisch 1','','','','']]};
 async function api(action,extra={}){let r=await fetch(API,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({action,token,...extra})});let j=await r.json();if(!r.ok)throw Error(j.error||'Fehler');return j}
 async function checkSetup(){
@@ -75,17 +76,23 @@ function renderRanking(){let a=[];Object.values(data).forEach(rows=>rows.forEach
 function renderAll(){['farm','mine','active','passive'].forEach(render);renderRanking()}
 function editing(){let e=document.activeElement;return e&&e.tagName==='INPUT'&&app.contains(e)}async function refreshRemote(){if(editing()){pendingRemote=true;status.textContent='Neue Daten warten - werden nach Eingabe uebernommen';return}try{let j=await api('load');if(j.version>version){data=j.data;version=j.version;renderAll();status.textContent='Live aktualisiert'+(j.updated_by?' von '+j.updated_by:'')}}catch(e){}}
 document.addEventListener('focusout',()=>{if(pendingRemote)setTimeout(()=>{pendingRemote=false;refreshRemote()},100)});function subscribe(){
-  if(realtimeChannel)return;
-  realtimeChannel=supabase.channel('preise-live-'+Date.now());
-  realtimeChannel.on('postgres_changes',{event:'UPDATE',schema:'public',table:'price_list',filter:'id=eq.1'},async()=>{
-    try{
-      if(editing()){pendingRemote=true;status.textContent='Neue Daten warten - Eingabe erst beenden.';return}
-      let j=await api('load');
-      data=j.data||data;version=j.version||version;renderAll();
-      status.textContent='Live aktualisiert';
-    }catch(e){console.warn('Realtime update:',e)}
-  });
-  realtimeChannel.subscribe();
+  try{
+    if(realtimeChannel)return;
+    const ch=supabase.channel('preise-live');
+    ch.on('postgres_changes',{event:'UPDATE',schema:'public',table:'price_list',filter:'id=eq.1'},async()=>{
+      try{
+        if(editing()){pendingRemote=true;status.textContent='Neue Daten warten - Eingabe erst beenden.';return}
+        const j=await api('load');
+        data=j.data||data;version=j.version||version;renderAll();
+        status.textContent='Live aktualisiert';
+      }catch(e){console.warn('Realtime update failed',e)}
+    });
+    realtimeChannel=ch;
+    ch.subscribe();
+  }catch(e){
+    console.warn('Realtime konnte nicht gestartet werden',e);
+    realtimeChannel=null;
+  }
 }
 function downloadBackup(){let b=new Blob([JSON.stringify({savedAt:new Date().toISOString(),data},null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='narco-preisliste-backup-'+new Date().toISOString().slice(0,10)+'.json';a.click();URL.revokeObjectURL(a.href)}
 async function openAdmin(){admin.classList.add('open');await loadUsers()}function closeAdmin(){admin.classList.remove('open')}async function loadUsers(){let j=await api('users');users.innerHTML=j.users.map(u=>`<div class="userrow"><b>${esc(u.username)}</b><span>${u.is_admin?'Admin':'Benutzer'} - ${u.is_active?'aktiv':'gesperrt'}</span><button onclick="changePw('${esc(u.username)}')">Passwort</button><button onclick="toggleUser('${esc(u.username)}',${!u.is_active})">${u.is_active?'Sperren':'Aktivieren'}</button></div>`).join('')}
