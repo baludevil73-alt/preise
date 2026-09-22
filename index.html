@@ -1,4 +1,5 @@
-<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Narco City - Preisliste</title>
+<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><!-- BUILD: PREISE-STABLE-4 -->
+<title>Narco City - Preisliste</title>
 <style>:root{--bg:#050b0e;--panel:#08191b;--line:#12d8d5;--green:#28ed89;--text:#f3f7f7;--muted:#a9bcc0;--input:#152a24;--danger:#ff6677}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% 0,#183041 0,#071014 38%,#030708 100%);color:var(--text);font-family:Arial,sans-serif}.wrap{max-width:1700px;margin:auto;padding:28px}.hero{text-align:center;padding:20px}.hero h1{font-size:clamp(32px,5vw,68px);margin:0;text-transform:uppercase}.hero h1 span,.calc{color:var(--green)}.hero p,.hint{color:var(--muted)}.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.card,.loginbox,.modalbox{background:rgba(8,25,27,.97);border:1px solid var(--line);border-radius:14px;padding:16px}.wide{grid-column:1/-1}h2{margin:0 0 12px;text-transform:uppercase}table{width:100%;border-collapse:collapse;min-width:850px}th,td{border:1px solid #295154;padding:10px;text-align:center}th{background:#10272a}td:first-child{text-align:left}input{width:100%;min-width:150px;background:var(--input);border:1px solid #536b5d;color:#ffe675;padding:10px;border-radius:6px;font:inherit}td:nth-child(1) input,td:nth-child(4) input{min-width:210px}input[type=number]{min-width:125px;text-align:right}button{background:#0c2524;color:#fff;border:1px solid var(--green);padding:10px 15px;border-radius:8px;cursor:pointer;font-weight:700}.danger{border-color:var(--danger)}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}.scroll{overflow:auto}.rank{font-size:18px;margin:6px}.login{min-height:100vh;display:grid;place-items:center;padding:20px}.loginbox{width:min(460px,100%)}.loginbox input{margin:7px 0}.topbar{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}.status{color:var(--muted);font-size:13px}.modal{position:fixed;inset:0;background:#000b;display:none;place-items:center;padding:20px;z-index:10}.modal.open{display:grid}.modalbox{width:min(800px,100%);max-height:90vh;overflow:auto}.userrow{display:grid;grid-template-columns:1fr auto auto auto;gap:8px;align-items:center;border-bottom:1px solid #294;padding:10px 0}@media(max-width:900px){.grid{grid-template-columns:1fr}.wrap{padding:12px}}
 /* Kompaktere Tabellen */
 .wrap{max-width:1180px;margin-left:auto;margin-right:auto}
@@ -19,6 +20,55 @@ input[type=number]{min-width:0!important}
   .wrap{max-width:100%;padding:10px}
   table{min-width:720px}
 }
+
+/* BUILD: COMPACT-NOSCROLL-5 */
+html,body{max-width:100%;overflow-x:hidden}
+body{font-size:14px}
+.wrap{width:min(1120px,calc(100% - 24px))!important;max-width:1120px!important;margin:0 auto!important;padding:18px 0!important}
+header{padding:22px 0 12px!important}
+h1{font-size:clamp(30px,4vw,52px)!important;margin:0 0 8px!important}
+.toolbar{display:flex!important;flex-wrap:wrap!important;gap:6px!important;align-items:center!important}
+.grid{display:grid!important;grid-template-columns:minmax(0,1.35fr) minmax(0,.85fr)!important;gap:12px!important}
+.card{min-width:0!important;padding:10px!important;overflow:hidden!important}
+.card h2{font-size:18px!important;margin:0 0 8px!important}
+.card h3{font-size:15px!important;margin:8px 0!important}
+.tablewrap{width:100%!important;max-width:100%!important;overflow:visible!important}
+table{width:100%!important;min-width:0!important;max-width:100%!important;table-layout:fixed!important;border-collapse:collapse!important;font-size:12px!important}
+th,td{padding:4px!important;min-width:0!important;white-space:normal!important}
+th{font-size:11px!important}
+input{box-sizing:border-box!important;width:100%!important;min-width:0!important;max-width:100%!important;padding:6px!important;font-size:12px!important}
+input[type=number]{min-width:0!important}
+button{padding:7px 10px!important;font-size:12px!important}
+td:first-child input,td:nth-child(4) input{min-width:0!important}
+table th:nth-child(1),table td:nth-child(1){width:23%!important}
+table th:nth-child(2),table td:nth-child(2){width:11%!important}
+table th:nth-child(3),table td:nth-child(3){width:10%!important}
+table th:nth-child(4),table td:nth-child(4){width:24%!important}
+table th:nth-child(5),table td:nth-child(5){width:13%!important}
+table th:nth-child(6),table td:nth-child(6){width:13%!important}
+table th:nth-child(7),table td:nth-child(7){width:6%!important}
+td:last-child button{padding:5px 7px!important;min-width:0!important}
+.fishgrid{display:grid!important;grid-template-columns:1fr 1fr!important;gap:12px!important;min-width:0!important}
+.fishgrid>*{min-width:0!important}
+#ranking{font-size:13px!important}
+@media(max-width:850px){
+ .wrap{width:min(100% - 16px,760px)!important}
+ .grid,.fishgrid{grid-template-columns:1fr!important}
+ table{font-size:11px!important}
+ th,td{padding:3px!important}
+ input{padding:5px!important;font-size:11px!important}
+}
+@media(max-width:560px){
+ body{font-size:12px}
+ h1{font-size:28px!important}
+ .wrap{width:calc(100% - 10px)!important}
+ .card{padding:7px!important}
+ table{font-size:10px!important}
+ th{font-size:9px!important}
+ th,td{padding:2px!important}
+ input{padding:4px 3px!important;font-size:10px!important}
+ button{padding:6px 7px!important;font-size:10px!important}
+}
 </style></head>
 <body><div id="login" class="login"><div class="loginbox">
 <div id="loginPanel"><h2>Anmeldung</h2><input id="lu" placeholder="Benutzername" autocomplete="username"><input id="lp" type="password" placeholder="Passwort" autocomplete="current-password"><button onclick="login()">Anmelden</button><p id="loginmsg" class="hint">Pruefe Benutzerverwaltung...</p></div>
@@ -33,7 +83,7 @@ input[type=number]{min-width:0!important}
 <div id="admin" class="modal"><div class="modalbox"><div class="topbar"><h2>Benutzerverwaltung</h2><button onclick="closeAdmin()">Schlie&#223;en</button></div><h3>Benutzer anlegen</h3><input id="nu" placeholder="Benutzername"><input id="np" type="password" placeholder="Passwort"><label><input id="na" type="checkbox" style="width:auto;min-width:0"> Administrator</label> <button onclick="createUser()">Anlegen</button><div id="users"></div></div></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
 const SUPABASE_URL='https://vdcpqsgpinpbxgjqxrtf.supabase.co', SUPABASE_KEY='sb_publishable_G2ox0HhC9KGXQfOnw7p7Ig_7lxJuEF5', API=SUPABASE_URL+'/functions/v1/narco-api';
-const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);let realtimeChannel=null;
+const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 let token=localStorage.narcoToken||'',me=null,isAdmin=false,data=null,version=0,saveTimer=null,pendingRemote=false;
 const defaults={farm:[['Tabakblatt',20,1,'Verarbeiteter Tabak',1050],['Orange',10,1,'Orangensaft',614]],mine:[['Iron',5,1,'Eisen',431]],active:[['Fisch 1','','','','']],passive:[['Fisch 1','','','','']]};
 async function api(action,extra={}){let r=await fetch(API,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({action,token,...extra})});let j=await r.json();if(!r.ok)throw Error(j.error||'Fehler');return j}
@@ -75,25 +125,7 @@ function queueSave(){status.textContent='Speichern...';clearTimeout(saveTimer);s
 function renderRanking(){let a=[];Object.values(data).forEach(rows=>rows.forEach(r=>{let v=value(r);if(Number.isFinite(v))a.push({n:(r[3]||r[0])+' ('+r[0]+')',v})}));a.sort((x,y)=>y.v-x.v);ranking.innerHTML=a.map((x,i)=>`<div class="rank">${i+1}. <b>${esc(x.n)}</b> <span class="calc">${money(x.v)}</span></div>`).join('')}
 function renderAll(){['farm','mine','active','passive'].forEach(render);renderRanking()}
 function editing(){let e=document.activeElement;return e&&e.tagName==='INPUT'&&app.contains(e)}async function refreshRemote(){if(editing()){pendingRemote=true;status.textContent='Neue Daten warten - werden nach Eingabe uebernommen';return}try{let j=await api('load');if(j.version>version){data=j.data;version=j.version;renderAll();status.textContent='Live aktualisiert'+(j.updated_by?' von '+j.updated_by:'')}}catch(e){}}
-document.addEventListener('focusout',()=>{if(pendingRemote)setTimeout(()=>{pendingRemote=false;refreshRemote()},100)});function subscribe(){
-  try{
-    if(realtimeChannel)return;
-    const ch=supabase.channel('preise-live');
-    ch.on('postgres_changes',{event:'UPDATE',schema:'public',table:'price_list',filter:'id=eq.1'},async()=>{
-      try{
-        if(editing()){pendingRemote=true;status.textContent='Neue Daten warten - Eingabe erst beenden.';return}
-        const j=await api('load');
-        data=j.data||data;version=j.version||version;renderAll();
-        status.textContent='Live aktualisiert';
-      }catch(e){console.warn('Realtime update failed',e)}
-    });
-    realtimeChannel=ch;
-    ch.subscribe();
-  }catch(e){
-    console.warn('Realtime konnte nicht gestartet werden',e);
-    realtimeChannel=null;
-  }
-}
+document.addEventListener('focusout',()=>{if(pendingRemote)setTimeout(()=>{pendingRemote=false;refreshRemote()},100)});function subscribe(){return;}
 function downloadBackup(){let b=new Blob([JSON.stringify({savedAt:new Date().toISOString(),data},null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='narco-preisliste-backup-'+new Date().toISOString().slice(0,10)+'.json';a.click();URL.revokeObjectURL(a.href)}
 async function openAdmin(){admin.classList.add('open');await loadUsers()}function closeAdmin(){admin.classList.remove('open')}async function loadUsers(){let j=await api('users');users.innerHTML=j.users.map(u=>`<div class="userrow"><b>${esc(u.username)}</b><span>${u.is_admin?'Admin':'Benutzer'} - ${u.is_active?'aktiv':'gesperrt'}</span><button onclick="changePw('${esc(u.username)}')">Passwort</button><button onclick="toggleUser('${esc(u.username)}',${!u.is_active})">${u.is_active?'Sperren':'Aktivieren'}</button></div>`).join('')}
 async function createUser(){try{await api('createUser',{username:nu.value,password:np.value,is_admin:na.checked});nu.value=np.value='';await loadUsers()}catch(e){alert(e.message)}}async function changePw(u){let p=prompt('Neues Passwort fuer '+u);if(p){await api('setPassword',{username:u,password:p});alert('Passwort geaendert.')}}async function toggleUser(u,a){await api('setActive',{username:u,active:a});await loadUsers()}
