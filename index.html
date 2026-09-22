@@ -42,6 +42,33 @@ input[type=number]{min-width:0!important}
 #app td:last-child button{padding:7px 8px}
 @media(max-width:1100px){#app .grid{grid-template-columns:1fr}}
 
+
+/* FischverkÃ¤ufer â€“ integriertes Design nach Bildvorlage */
+#app .fish-card{padding:0;overflow:hidden;border-color:#18dbe3;background:linear-gradient(180deg,rgba(3,31,39,.98),rgba(3,18,22,.98));box-shadow:0 0 28px #00dce51a}
+#app .fish-banner{position:relative;min-height:86px;padding:14px 20px 12px 98px;background:linear-gradient(90deg,rgba(1,28,38,.96),rgba(2,38,50,.78),rgba(4,20,27,.72));border-bottom:1px solid #168997;overflow:hidden}
+#app .fish-banner:before{content:'ðŸŸ';position:absolute;left:24px;top:10px;font-size:58px;filter:saturate(.8)}
+#app .fish-banner h2{font-size:30px;letter-spacing:.5px;margin:0;color:#fff}
+#app .fish-banner p{margin:2px 0 0;font-weight:700;letter-spacing:.08em;color:#eaf7f8}
+#app .fish-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:8px}
+#app .fish-panel{border:1px solid #12d8d5;border-radius:12px;overflow:hidden;background:rgba(2,23,27,.88)}
+#app .fish-head{display:flex;align-items:center;gap:12px;padding:9px 14px 8px;border-bottom:1px solid #2a565b}
+#app .fish-head .symbol{font-size:34px;line-height:1;color:#29e8ed}
+#app .fish-head h3{margin:0;color:#2cecf1;font-size:23px;text-transform:uppercase}
+#app .fish-head p{margin:1px 0 0;color:#d7e9eb;font-size:12px;letter-spacing:.03em}
+#app .fish-table{min-width:0!important;table-layout:fixed;font-size:12px}
+#app .fish-table th,#app .fish-table td{padding:6px 7px;border-color:#274c51}
+#app .fish-table th{height:46px;background:rgba(4,23,27,.95);font-size:11px;line-height:1.15}
+#app .fish-table th:nth-child(1),#app .fish-table td:nth-child(1){width:18%}
+#app .fish-table th:nth-child(2),#app .fish-table td:nth-child(2){width:20%}
+#app .fish-table th:nth-child(3),#app .fish-table td:nth-child(3){width:22%}
+#app .fish-table th:nth-child(4),#app .fish-table td:nth-child(4){width:20%}
+#app .fish-table th:nth-child(5),#app .fish-table td:nth-child(5){width:20%}
+#app .fish-table td:first-child{position:relative;padding-left:30px}
+#app .fish-table td:first-child:before{content:'â—†';position:absolute;left:10px;top:50%;transform:translateY(-50%) rotate(45deg);color:#d9ecff;font-size:12px}
+#app .fish-table input{background:transparent;border:0;color:#f1f6f7;text-align:center;padding:4px 2px;border-radius:0}
+#app .fish-table input:focus{outline:1px solid #18dbe3;background:#0c2b30}
+#app .fish-table .calc{color:#f1f6f7;font-weight:700}
+@media(max-width:1100px){#app .fish-grid{grid-template-columns:1fr}}
 </style></head>
 <body><div id="login" class="login"><div class="loginbox">
 <div id="loginPanel"><h2>Anmeldung</h2><input id="lu" placeholder="Benutzername" autocomplete="username"><input id="lp" type="password" placeholder="Passwort" autocomplete="current-password"><button onclick="login()">Anmelden</button><p id="loginmsg" class="hint">Pruefe Benutzerverwaltung...</p></div>
@@ -51,7 +78,7 @@ input[type=number]{min-width:0!important}
 <div class="actions"><button onclick="addRow('farm')">+ Ware</button><button onclick="addRow('mine')">+ Bergbau</button><button onclick="addRow('active')">+ Aktiv-Fisch</button><button onclick="addRow('passive')">+ Passiv-Fisch</button></div><section class="grid">
 <div class="card"><h2>Farming & Sammelwaren</h2><div class="scroll"><table><thead><tr><th>Rohware</th><th>Menge</th><th>Ergibt</th><th>Endprodukt</th><th>Preis $</th><th>Wert/Rohware</th><th></th></tr></thead><tbody id="farm"></tbody></table></div></div>
 <div class="card"><h2>Bergbau</h2><div class="scroll"><table><thead><tr><th>Rohware</th><th>Menge</th><th>Ergibt</th><th>Endprodukt</th><th>Preis $</th><th>Wert/Rohware</th><th></th></tr></thead><tbody id="mine"></tbody></table></div></div>
-<div class="card wide"><h2>Fischverk&#228;ufer</h2><div class="grid"><div><h3>Aktivangeln</h3><div class="scroll"><table><tbody id="active"></tbody></table></div></div><div><h3>Passivangeln</h3><div class="scroll"><table><tbody id="passive"></tbody></table></div></div></div></div>
+<div class="card wide fish-card"><div class="fish-banner"><h2>FISCHVERKÃ„UFER</h2><p>AUS DEM WASSER. DIREKT AUF DEN TISCH.</p></div><div class="fish-grid"><div class="fish-panel"><div class="fish-head"><div class="symbol">âš“</div><div><h3>Aktivangeln</h3><p>SELBST ANGELN. MEHR KONTROLLE. MEHR ERTRAG.</p></div></div><div class="scroll"><table class="fish-table"><thead><tr><th>FISCHART</th><th>MENGE<br>FÃœR 1 PRODUKT</th><th>ENDPRODUKT</th><th>PREIS<br>(PRO STÃœCK)</th><th>WERT PRO<br>ROHWARE</th></tr></thead><tbody id="active"></tbody></table></div></div><div class="fish-panel"><div class="fish-head"><div class="symbol">â™¢</div><div><h3>Passivangeln</h3><p>ENTSPANNT FISCHEN. LÃ„UFT NEBENBEI.</p></div></div><div class="scroll"><table class="fish-table"><thead><tr><th>FISCHART</th><th>MENGE<br>FÃœR 1 PRODUKT</th><th>ENDPRODUKT</th><th>PREIS<br>(PRO STÃœCK)</th><th>WERT PRO<br>ROHWARE</th></tr></thead><tbody id="passive"></tbody></table></div></div></div></div>
 <div class="card wide"><h2>Direkter Vergleich</h2><div id="ranking"></div><p class="hint">Aenderungen werden zentral gespeichert. Andere Aktualisierungen werden nur uebernommen, wenn du gerade nicht in einem Eingabefeld tippst.</p></div></section></main>
 <div id="admin" class="modal"><div class="modalbox"><div class="topbar"><h2>Benutzerverwaltung</h2><button onclick="closeAdmin()">Schlie&#223;en</button></div><h3>Benutzer anlegen</h3><input id="nu" placeholder="Benutzername"><input id="np" type="password" placeholder="Passwort"><label><input id="na" type="checkbox" style="width:auto;min-width:0"> Administrator</label> <button onclick="createUser()">Anlegen</button><div id="users"></div></div></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
@@ -92,7 +119,7 @@ function logout(){localStorage.removeItem('narcoToken');location.reload()}
 function money(v){return Number.isFinite(v)?v.toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2})+' $':'&#8212;'}function value(r){let q=+r[1],o=+r[2],p=+r[4];return q&&o&&p?p*o/q:NaN}
 function esc(v){return String(v??'').replaceAll('&','&amp;').replaceAll('"','&quot;').replaceAll('<','&lt;')}
 function cell(t,i,j,v,n=false){return `<input data-key="${t}:${i}:${j}" ${n?'type="number" step="any" min="0"':''} value="${esc(v)}" oninput="edit('${t}',${i},${j},this.value)">`}
-function render(t){document.getElementById(t).innerHTML=data[t].map((r,i)=>`<tr><td>${cell(t,i,0,r[0])}</td><td>${cell(t,i,1,r[1],1)}</td><td>${cell(t,i,2,r[2],1)}</td><td>${cell(t,i,3,r[3])}</td><td>${cell(t,i,4,r[4],1)}</td><td class="calc">${money(value(r))}</td><td><button class="danger" onclick="delRow('${t}',${i})">X</button></td></tr>`).join('')}
+function render(t){if(t==='active'||t==='passive'){document.getElementById(t).innerHTML=data[t].map((r,i)=>`<tr><td>${cell(t,i,0,r[0])}</td><td>${cell(t,i,1,r[1],1)}</td><td>${cell(t,i,3,r[3])}</td><td>${cell(t,i,4,r[4],1)}</td><td class="calc">${money(value(r))}</td></tr>`).join('');return}document.getElementById(t).innerHTML=data[t].map((r,i)=>`<tr><td>${cell(t,i,0,r[0])}</td><td>${cell(t,i,1,r[1],1)}</td><td>${cell(t,i,2,r[2],1)}</td><td>${cell(t,i,3,r[3])}</td><td>${cell(t,i,4,r[4],1)}</td><td class="calc">${money(value(r))}</td><td><button class="danger" onclick="delRow('${t}',${i})">X</button></td></tr>`).join('')}
 function edit(t,i,j,v){
  const val=[1,2,4].includes(j)?(v===''?'':+v):v;
  data[t][i][j]=val;
@@ -113,7 +140,7 @@ function queuePatch(t,i,j,val){
   }catch(e){status.textContent='Speicherfehler: '+e.message}
  },250);
 }
-function addRow(t){data[t].push(['','','','','']);render(t);queueSave()}function delRow(t,i){data[t].splice(i,1);render(t);queueSave()}
+function addRow(t){data[t].push((t==='active'||t==='passive')?['', '', 1, '', '']:['','','','','']);render(t);queueSave()}function delRow(t,i){data[t].splice(i,1);render(t);queueSave()}
 function queueSave(){status.textContent='Speichern...';clearTimeout(saveTimer);saveTimer=setTimeout(saveNow,450)}async function saveNow(){try{let j=await api('save',{data});version=j.version;status.textContent='Gespeichert'}catch(e){status.textContent='Speicherfehler: '+e.message}}
 function renderRanking(){let a=[];Object.values(data).forEach(rows=>rows.forEach(r=>{let v=value(r);if(Number.isFinite(v))a.push({n:(r[3]||r[0])+' ('+r[0]+')',v})}));a.sort((x,y)=>y.v-x.v);ranking.innerHTML=a.map((x,i)=>`<div class="rank">${i+1}. <b>${esc(x.n)}</b> <span class="calc">${money(x.v)}</span></div>`).join('')}
 function renderAll(){['farm','mine','active','passive'].forEach(render);renderRanking()}
