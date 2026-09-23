@@ -150,29 +150,52 @@ function editing(){let e=document.activeElement;return e&&e.tagName==='INPUT'&&a
   const j=await api('load');
   if(j.version>version){
    const remote=j.data||{};
-   const active=document.activeElement;
-   const activeKey=active&&active.dataset?active.dataset.key:null;
+   const activeEl=document.activeElement;
+   const activeKey=activeEl&&activeEl.dataset?activeEl.dataset.key:null;
+   let deferred=false;
+
    ['farm','mine','active','passive'].forEach(t=>{
-    const rr=remote[t]||[];
+    const rr=Array.isArray(remote[t])?remote[t]:[];
+    const editingThisSection=!!(activeKey&&activeKey.startsWith(t+':'));
     if(!Array.isArray(data[t]))data[t]=[];
+
+    // Struktur-Aenderungen (neue/gelÃ¶schte Zeilen) sofort sichtbar machen,
+    // solange in genau dieser Tabelle nicht gerade getippt wird.
     if(rr.length!==data[t].length){
-      if(!(activeKey&&activeKey.startsWith(t+':'))) data[t]=structuredClone(rr);
-      return;
+     if(editingThisSection){deferred=true;return}
+     data[t]=structuredClone(rr);
+     render(t);
+     return;
     }
+
+    let changed=false;
     rr.forEach((row,i)=>row.forEach((val,c)=>{
-      const key=t+':'+i+':'+c;
-      if(key===activeKey)return;
-      if(Date.now()-(localEditAt[key]||0)<1200)return;
-      if(data[t][i])data[t][i][c]=val;
-      const el=document.querySelector('input[data-key="'+key+'"]');
-      if(el && el!==active) el.value=val??'';
+     const key=t+':'+i+':'+c;
+     if(key===activeKey){deferred=true;return}
+     if(Date.now()-(localEditAt[key]||0)<1200){deferred=true;return}
+     if(data[t][i] && data[t][i][c]!==val){data[t][i][c]=val;changed=true}
     }));
+
+    // Ganze Tabelle neu zeichnen, damit auch berechnete Werte sofort stimmen.
+    // Beim Tippen nur die anderen Eingabefelder aktualisieren, damit der Fokus bleibt.
+    if(changed){
+     if(!editingThisSection) render(t);
+     else rr.forEach((row,i)=>row.forEach((val,c)=>{
+      const key=t+':'+i+':'+c;
+      if(key===activeKey||Date.now()-(localEditAt[key]||0)<1200)return;
+      const el=document.querySelector('input[data-key="'+key+'"]');
+      if(el&&el!==activeEl)el.value=val??'';
+     }));
+    }
    });
-   version=j.version||version;
+
    renderRanking();
-   status.textContent='Live aktualisiert'+(j.updated_by?' von '+j.updated_by:'');
+   // Falls eine gerade bearbeitete Zelle die Ãœbernahme blockiert, Version noch
+   // nicht abschlieÃŸen. Dadurch wird nach Verlassen des Feldes erneut abgeglichen.
+   if(!deferred) version=j.version||version;
+   status.textContent=deferred?'Live-Aktualisierung wartet auf Eingabeende':'Live aktualisiert'+(j.updated_by?' von '+j.updated_by:'');
   }
- }catch(e){console.warn('Sync:',e)}
+ }catch(e){console.warn('Sync:',e);status.textContent='Sync-Fehler: '+e.message}
  finally{syncBusy=false}
 }
 document.addEventListener('focusout',()=>{setTimeout(refreshRemote,150)});
